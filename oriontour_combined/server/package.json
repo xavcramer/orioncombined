@@ -1,0 +1,16 @@
+{
+  "name": "oriontour-server",
+  "private": true,
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.22.1",
+    "jsonwebtoken": "^9.0.2",
+    "pg": "^8.16.3",
+    "pool": "^0.4.1"
+  }
+}
