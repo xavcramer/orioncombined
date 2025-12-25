@@ -12,6 +12,7 @@ export default function Catalog() {
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
+          fontFamily: 'Segoe UI'
         }}
       >
         <div style={{ fontWeight: 800 }}>OrionTour</div>
@@ -25,6 +26,7 @@ export default function Catalog() {
             background: '#111',
             color: '#fff',
             fontWeight: 700,
+            fontFamily: 'Segoe UI'
           }}
         >
           Админ

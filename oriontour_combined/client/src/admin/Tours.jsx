@@ -4,6 +4,7 @@ import { useMeta } from '../hooks/useMeta.js'
 import DataTable from '../components/DataTable.jsx'
 import Modal from '../components/Modal.jsx'
 
+
 const empty = { id: null, title: '', short_desc: '', country_id: '', image_url: '', is_hot: false }
 
 export default function Tours() {

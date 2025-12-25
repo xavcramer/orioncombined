@@ -12,6 +12,8 @@ import Tours from './admin/Tours.jsx'
 import Hotels from './admin/Hotels.jsx'
 import Offers from './admin/Offers.jsx'
 
+import "./main.css"
+
 export default function App() {
   return (
     <BrowserRouter>

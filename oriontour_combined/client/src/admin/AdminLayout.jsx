@@ -37,11 +37,11 @@ export default function AdminLayout() {
         <aside style={{ display: 'grid', gap: 10, alignContent: 'start' }}>
           <div style={{ fontWeight: 900, fontSize: 18, padding: '6px 4px' }}>Admin</div>
 
-          <NavLink to="/admin/dashboard">Dashboard</NavLink>
-          <NavLink to="/admin/countries">Countries</NavLink>
-          <NavLink to="/admin/tours">Tours</NavLink>
-          <NavLink to="/admin/hotels">Hotels</NavLink>
-          <NavLink to="/admin/offers">Offers</NavLink>
+          <NavLink to="/admin/dashboard">Панель управления</NavLink>
+          <NavLink to="/admin/countries">Страны</NavLink>
+          <NavLink to="/admin/tours">Туры</NavLink>
+          <NavLink to="/admin/hotels">Отели</NavLink>
+          <NavLink to="/admin/offers">Офферы</NavLink>
 
           <button
             onClick={exit}
