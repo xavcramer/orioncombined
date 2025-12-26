@@ -18,6 +18,20 @@ const empty = {
   available_seats: '',
 }
 
+function formatAdminDate(value) {
+  if (!value) return ''
+  const d = new Date(value)
+  if (Number.isNaN(d.getTime())) return String(value)
+
+  return new Intl.DateTimeFormat('ru-RU', {
+    timeZone: 'Europe/Berlin',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).format(d)
+}
+
+
 export default function Offers() {
   const { meta } = useMeta()
   const [rows, setRows] = useState([])
@@ -44,7 +58,7 @@ export default function Offers() {
 
   const columns = [
     { key: 'id', title: 'ID' },
-    { key: 'start_date', title: 'Дата' },
+    { key: 'start_date', title: 'Дата', render: (r) => formatAdminDate(r.start_date) },
     { key: 'nights', title: 'Ночей' },
     { key: 'hotel_name', title: 'Отель' },
     { key: 'departure_city_name', title: 'Вылет' },
@@ -53,6 +67,7 @@ export default function Offers() {
     { key: 'currency_code', title: 'Вал.' },
     { key: 'is_available', title: 'Доступен', render: (r) => (r.is_available ? '✓' : '') },
   ]
+
 
   const create = () => { setForm(empty); setOpen(true) }
 
@@ -103,6 +118,7 @@ export default function Offers() {
           <input type="checkbox" checked={onlyAvailable} onChange={(e) => setOnlyAvailable(e.target.checked)} />
           только доступные
         </label>
+
 
         <button onClick={create} style={{ padding: '10px 12px', borderRadius: 10, border: '1px solid #111', background: '#111', color: '#fff' }}>
           + Создать оффер
@@ -198,6 +214,7 @@ export default function Offers() {
               <input type="checkbox" checked={form.includes_flight} onChange={(e) => setForm({ ...form, includes_flight: e.target.checked })} />
               includes_flight
             </label>
+
 
             <label style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <input type="checkbox" checked={form.is_available} onChange={(e) => setForm({ ...form, is_available: e.target.checked })} />

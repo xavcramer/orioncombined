@@ -1,6 +1,5 @@
 SET search_path TO oriontour, public;
 
-
 CREATE TABLE IF NOT EXISTS country (
   id               BIGSERIAL PRIMARY KEY,
   name_ru          TEXT NOT NULL,
@@ -69,8 +68,6 @@ CREATE TABLE IF NOT EXISTS currency (
   symbol  TEXT
 );
 
-
-
 CREATE TABLE IF NOT EXISTS hotel (
   id          BIGSERIAL PRIMARY KEY,
   country_id  BIGINT NOT NULL REFERENCES country(id) ON DELETE CASCADE,
@@ -111,7 +108,6 @@ CREATE TABLE IF NOT EXISTS tour (
 );
 
 CREATE INDEX IF NOT EXISTS idx_tour_country ON tour(country_id);
-
 
 CREATE UNIQUE INDEX IF NOT EXISTS uq_tour_title_country
   ON tour (title, country_id);
@@ -181,8 +177,6 @@ CREATE TABLE IF NOT EXISTS contact_message (
   status     TEXT NOT NULL DEFAULT 'new' CHECK (status IN ('new','read','closed'))
 );
 
-
-
 CREATE OR REPLACE VIEW globe_markers AS
 SELECT
   c.id, c.name_ru, c.name_en, c.iso_code, c.lat, c.lng, c.flag_url,
@@ -218,7 +212,6 @@ FROM hotel h
 LEFT JOIN tour_offer o ON o.hotel_id = h.id AND o.is_available = TRUE
 LEFT JOIN review r ON r.hotel_id = h.id
 GROUP BY h.id;
-
 
 CREATE OR REPLACE FUNCTION set_updated_at()
 RETURNS trigger AS $$
@@ -273,8 +266,6 @@ BEGIN
   END IF;
 END $$;
 
-
-
 INSERT INTO currency(code, name_ru, symbol)
 VALUES
   ('RUB','Российский рубль','₽'),
@@ -311,8 +302,6 @@ VALUES
   ('Екатеринбург', 'Yekaterinburg', 56.8389, 60.6057)
 ON CONFLICT (name_ru) DO UPDATE
 SET name_en = EXCLUDED.name_en, lat = EXCLUDED.lat, lng = EXCLUDED.lng;
-
-
 
 
 WITH c AS (SELECT id AS country_id FROM country WHERE iso_code='TR'),
@@ -450,7 +439,6 @@ JOIN (VALUES
 ON CONFLICT (country_id, name_ru) DO UPDATE
 SET region_id = EXCLUDED.region_id, name_en = EXCLUDED.name_en, lat = EXCLUDED.lat, lng = EXCLUDED.lng;
 
-
 INSERT INTO tour (title, short_desc, country_id, image_url, is_hot)
 VALUES
   ('Турция: Анталия 7 ночей', 'Море, пляжи, AI, перелёт + трансфер.', (SELECT id FROM country WHERE iso_code='TR'),
@@ -477,7 +465,6 @@ ON CONFLICT (title, country_id) DO UPDATE
 SET short_desc = EXCLUDED.short_desc,
     image_url  = EXCLUDED.image_url,
     is_hot     = EXCLUDED.is_hot;
-
 
 INSERT INTO hotel (country_id, resort_id, name, stars, address, lat, lng, description)
 VALUES
@@ -516,7 +503,6 @@ SET resort_id   = EXCLUDED.resort_id,
     lng        = EXCLUDED.lng,
     description= EXCLUDED.description;
 
-
 INSERT INTO hotel_image (hotel_id, url, sort_order)
 SELECT h.id, v.url, v.sort_order
 FROM hotel h
@@ -544,7 +530,6 @@ JOIN (VALUES
 ) v(hotel_name, url, sort_order)
 ON v.hotel_name = h.name
 ON CONFLICT (hotel_id, url) DO NOTHING;
-
 
 WITH dep_msk AS (SELECT id AS dc_id FROM departure_city WHERE name_ru='Москва' LIMIT 1),
      dep_spb AS (SELECT id AS dc_id FROM departure_city WHERE name_ru='Санкт-Петербург' LIMIT 1),
@@ -592,7 +577,6 @@ ON v.hotel_name = h.name
 WHERE v.departure_city_id IS NOT NULL
 ON CONFLICT ON CONSTRAINT uq_offer_key DO NOTHING;
 
-
 INSERT INTO review (hotel_id, author_name, rating, text, source, created_at)
 SELECT h.id, v.author_name, v.rating, v.text, v.source, now() - (v.days_ago || ' days')::interval
 FROM hotel h
@@ -605,7 +589,6 @@ JOIN (VALUES
 ON v.hotel_name = h.name
 ON CONFLICT DO NOTHING;
 
-
 INSERT INTO review_image (review_id, url)
 SELECT r.id, v.url
 FROM review r
@@ -616,7 +599,6 @@ JOIN (VALUES
 ) v(hotel_name, url)
 ON v.hotel_name = h.name
 ON CONFLICT (review_id, url) DO NOTHING;
-
 
 INSERT INTO contact_message (name, phone, email, message, status, created_at)
 VALUES
