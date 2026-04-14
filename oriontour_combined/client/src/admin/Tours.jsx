@@ -4,8 +4,28 @@ import { useMeta } from '../hooks/useMeta.js'
 import DataTable from '../components/DataTable.jsx'
 import Modal from '../components/Modal.jsx'
 
-
 const empty = { id: null, title: '', short_desc: '', country_id: '', image_url: '', is_hot: false }
+
+function formatInt(value) {
+  if (value === null || value === undefined || value === '') return '0'
+  const num = Number(value)
+  if (!Number.isFinite(num)) return '0'
+
+  return new Intl.NumberFormat('ru-RU', {
+    maximumFractionDigits: 0,
+  }).format(num)
+}
+
+function formatRating(value) {
+  if (value === null || value === undefined || value === '') return '0'
+  const num = Number(value)
+  if (!Number.isFinite(num)) return '0'
+
+  return new Intl.NumberFormat('ru-RU', {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 1,
+  }).format(num)
+}
 
 export default function Tours() {
   const { meta } = useMeta()
@@ -31,10 +51,10 @@ export default function Tours() {
     { key: 'id', title: 'ID' },
     { key: 'title', title: 'Тур' },
     { key: 'country_name', title: 'Страна' },
-    { key: 'is_hot', title: 'Hot', render: (r) => (r.is_hot ? '🔥' : '') },
-    { key: 'price_from', title: 'Цена от' },
-    { key: 'rating_avg', title: 'Рейтинг' },
-    { key: 'offers_count', title: 'Офферов' },
+    { key: 'is_hot', title: 'Hot', render: (r) => (r.is_hot ? 'Yes' : '') },
+    { key: 'price_from', title: 'Цена от', render: (r) => formatInt(r.price_from) },
+    { key: 'rating_avg', title: 'Рейтинг', render: (r) => formatRating(r.rating_avg) },
+    { key: 'offers_count', title: 'Офферов', render: (r) => formatInt(r.offers_count) },
   ]
 
   const edit = (r) => {
@@ -49,7 +69,10 @@ export default function Tours() {
     setOpen(true)
   }
 
-  const create = () => { setForm(empty); setOpen(true) }
+  const create = () => {
+    setForm(empty)
+    setOpen(true)
+  }
 
   const save = async () => {
     setSaving(true)
@@ -83,8 +106,16 @@ export default function Tours() {
   return (
     <div style={{ display: 'grid', gap: 12 }}>
       <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-        <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Поиск по туру/стране..." style={{ flex: 1, padding: 10, borderRadius: 10, border: '1px solid #ddd' }} />
-        <button onClick={create} style={{ padding: '10px 12px', borderRadius: 10, border: '1px solid #111', background: '#111', color: '#fff' }}>
+        <input
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+          placeholder="Поиск по туру/стране..."
+          style={{ flex: 1, padding: 10, borderRadius: 10, border: '1px solid #ddd' }}
+        />
+        <button
+          onClick={create}
+          style={{ padding: '10px 12px', borderRadius: 10, border: '1px solid #111', background: '#111', color: '#fff' }}
+        >
           + Добавить
         </button>
       </div>
@@ -98,15 +129,25 @@ export default function Tours() {
         footer={
           <>
             {form.id ? (
-              <button onClick={remove} style={{ padding: '10px 12px', borderRadius: 10, border: '1px solid #ddd', background: '#fff' }}>
+              <button
+                onClick={remove}
+                style={{ padding: '10px 12px', borderRadius: 10, border: '1px solid #ddd', background: '#fff' }}
+              >
                 Удалить
               </button>
             ) : null}
 
-            <button onClick={() => setOpen(false)} style={{ padding: '10px 12px', borderRadius: 10, border: '1px solid #ddd', background: '#fff' }}>
+            <button
+              onClick={() => setOpen(false)}
+              style={{ padding: '10px 12px', borderRadius: 10, border: '1px solid #ddd', background: '#fff' }}
+            >
               Отмена
             </button>
-            <button disabled={saving} onClick={save} style={{ padding: '10px 12px', borderRadius: 10, border: '1px solid #111', background: '#111', color: '#fff', opacity: saving ? 0.7 : 1 }}>
+            <button
+              disabled={saving}
+              onClick={save}
+              style={{ padding: '10px 12px', borderRadius: 10, border: '1px solid #111', background: '#111', color: '#fff', opacity: saving ? 0.7 : 1 }}
+            >
               {saving ? 'Сохранение...' : 'Сохранить'}
             </button>
           </>
@@ -148,6 +189,7 @@ function Field({ label, children }) {
   const el = React.cloneElement(children, {
     style: { padding: 10, borderRadius: 10, border: '1px solid #ddd', width: '100%' }
   })
+
   return (
     <div style={{ display: 'grid', gap: 6 }}>
       <div style={{ fontSize: 12, color: '#666' }}>{label}</div>

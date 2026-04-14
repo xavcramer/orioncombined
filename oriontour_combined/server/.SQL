@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS country (
   popularity_score INTEGER NOT NULL DEFAULT 0,
   created_at       TIMESTAMPTZ NOT NULL DEFAULT now(),
   updated_at       TIMESTAMPTZ NOT NULL DEFAULT now()
-);
+);		
 
 CREATE TABLE IF NOT EXISTS region (
   id         BIGSERIAL PRIMARY KEY,
@@ -285,13 +285,13 @@ ON CONFLICT (code) DO NOTHING;
 
 INSERT INTO country (name_ru, name_en, iso_code, lat, lng, flag_url, is_popular, popularity_score)
 VALUES
-  ('Турция', 'Turkey', 'TR', 38.9637, 35.2433, 'https://flagcdn.com/w80/tr.png', TRUE, 100),
-  ('Египет', 'Egypt', 'EG', 26.8206, 30.8025, 'https://flagcdn.com/w80/eg.png', TRUE, 90),
-  ('ОАЭ', 'United Arab Emirates', 'AE', 23.4241, 53.8478, 'https://flagcdn.com/w80/ae.png', TRUE, 70),
-  ('Таиланд', 'Thailand', 'TH', 15.8700, 100.9925, 'https://flagcdn.com/w80/th.png', TRUE, 65),
-  ('Вьетнам', 'Vietnam', 'VN', 14.0583, 108.2772, 'https://flagcdn.com/w80/vn.png', TRUE, 60),
-  ('Испания', 'Spain', 'ES', 40.4637, -3.7492, 'https://flagcdn.com/w80/es.png', TRUE, 75),
-  ('Италия', 'Italy', 'IT', 41.8719, 12.5674, 'https://flagcdn.com/w80/it.png', TRUE, 80)
+  ('Турция', 'Turkey', 'TR', 38.9637, 35.2433, '/uploads/country/turkey.jpg', TRUE, 100),
+  ('Египет', 'Egypt', 'EG', 26.8206, 30.8025, '/uploads/country/egypt.jpg', TRUE, 90),
+  ('ОАЭ', 'United Arab Emirates', 'AE', 23.4241, 53.8478, '/uploads/country/dubai.jpg', TRUE, 70),
+  ('Таиланд', 'Thailand', 'TH', 15.8700, 100.9925, '/uploads/country/thailand.jpg', TRUE, 65),
+  ('Вьетнам', 'Vietnam', 'VN', 14.0583, 108.2772, '/uploads/country/vietnam.jpg', TRUE, 60),
+  ('Испания', 'Spain', 'ES', 40.4637, -3.7492, '/uploads/country/spain.jpg', TRUE, 75),
+  ('Италия', 'Italy', 'IT', 41.8719, 12.5674, '/uploads/country/italy.jpg', TRUE, 80)
 ON CONFLICT (iso_code) DO NOTHING;
 
 INSERT INTO departure_city (name_ru, name_en, lat, lng)
@@ -442,25 +442,25 @@ SET region_id = EXCLUDED.region_id, name_en = EXCLUDED.name_en, lat = EXCLUDED.l
 INSERT INTO tour (title, short_desc, country_id, image_url, is_hot)
 VALUES
   ('Турция: Анталия 7 ночей', 'Море, пляжи, AI, перелёт + трансфер.', (SELECT id FROM country WHERE iso_code='TR'),
-   'https://picsum.photos/seed/turkey/900/500', TRUE),
+   '/uploads/tour/antalya.jpg', TRUE),
 
   ('Египет: Хургада 7 ночей', 'Красное море и кораллы. Перелёт включён.', (SELECT id FROM country WHERE iso_code='EG'),
-   'https://picsum.photos/seed/egypt/900/500', TRUE),
+   '/uploads/tour/hurgada.jpg', TRUE),
 
   ('ОАЭ: Дубай 5 ночей', 'Город будущего, пляж и шопинг.', (SELECT id FROM country WHERE iso_code='AE'),
-   'https://picsum.photos/seed/uae/900/500', FALSE),
+   '/uploads/tour/dubai-tour.jpg', FALSE),
 
   ('Таиланд: Пхукет 10 ночей', 'Островной отдых, пляжи и экскурсии.', (SELECT id FROM country WHERE iso_code='TH'),
-   'https://picsum.photos/seed/thai/900/500', FALSE),
+   '/uploads/tour/phuket.jpg', FALSE),
 
   ('Вьетнам: Нячанг 10 ночей', 'Пляжи, острова и уличная еда.', (SELECT id FROM country WHERE iso_code='VN'),
-   'https://picsum.photos/seed/vn/900/500', TRUE),
+   '/uploads/tour/nha-trang.jpg', TRUE),
 
   ('Испания: Коста-дель-Соль 7 ночей', 'Солнце Андалусии, пляжи и тапас.', (SELECT id FROM country WHERE iso_code='ES'),
-   'https://picsum.photos/seed/es/900/500', FALSE),
+   '/uploads/tour/marbella.jpg', FALSE),
 
   ('Италия: Римини 7 ночей', 'Адриатика и итальянская кухня.', (SELECT id FROM country WHERE iso_code='IT'),
-   'https://picsum.photos/seed/it/900/500', FALSE)
+   '/uploads/tour/rimini.jpg', FALSE)
 ON CONFLICT (title, country_id) DO UPDATE
 SET short_desc = EXCLUDED.short_desc,
     image_url  = EXCLUDED.image_url,
@@ -507,26 +507,26 @@ INSERT INTO hotel_image (hotel_id, url, sort_order)
 SELECT h.id, v.url, v.sort_order
 FROM hotel h
 JOIN (VALUES
-  ('Kemer Orion Resort',     'https://picsum.photos/seed/kemer1/800/500', 0),
-  ('Kemer Orion Resort',     'https://picsum.photos/seed/kemer2/800/500', 1),
+  ('Kemer Orion Resort',     '/uploads/hotel/kemer-hotel.jpg', 0),
+  ('Kemer Orion Resort',     '/uploads/hotel/kemer-hotel.jpg', 1),
 
-  ('Hurghada Coral Hotel',   'https://picsum.photos/seed/hurg1/800/500', 0),
-  ('Hurghada Coral Hotel',   'https://picsum.photos/seed/hurg2/800/500', 1),
+  ('Hurghada Coral Hotel',   '/uploads/hotel/hurghada-hotel.jpg', 0),
+  ('Hurghada Coral Hotel',   '/uploads/hotel/hurghada-hotel.jpg', 1),
 
-  ('Dubai Marina View',      'https://picsum.photos/seed/dub1/800/500', 0),
-  ('Dubai Marina View',      'https://picsum.photos/seed/dub2/800/500', 1),
+  ('Dubai Marina View',      '/uploads/hotel/dubai-hotel.jpg', 0),
+  ('Dubai Marina View',      '/uploads/hotel/dubai-hotel.jpg', 1),
 
-  ('Phuket Ocean Breeze',    'https://picsum.photos/seed/phu1/800/500', 0),
-  ('Phuket Ocean Breeze',    'https://picsum.photos/seed/phu2/800/500', 1),
+  ('Phuket Ocean Breeze',    '/uploads/hotel/thailand-hotel.jpg', 0),
+  ('Phuket Ocean Breeze',    '/uploads/hotel/thailand-hotel.jpg', 1),
 
-  ('Nha Trang Bay Resort',   'https://picsum.photos/seed/nt1/800/500', 0),
-  ('Nha Trang Bay Resort',   'https://picsum.photos/seed/nt2/800/500', 1),
+  ('Nha Trang Bay Resort',   '/uploads/hotel/vietnam-hotel.jpg', 0),
+  ('Nha Trang Bay Resort',   '/uploads/hotel/vietnam-hotel.jpg', 1),
 
-  ('Marbella Sun Hotel',     'https://picsum.photos/seed/mar1/800/500', 0),
-  ('Marbella Sun Hotel',     'https://picsum.photos/seed/mar2/800/500', 1),
+  ('Marbella Sun Hotel',     '/uploads/hotel/spain-hotel.jpg', 0),
+  ('Marbella Sun Hotel',     '/uploads/hotel/spain-hotel.jpg', 1),
 
-  ('Rimini Adriatic Park',   'https://picsum.photos/seed/rim1/800/500', 0),
-  ('Rimini Adriatic Park',   'https://picsum.photos/seed/rim2/800/500', 1)
+  ('Rimini Adriatic Park',   '/uploads/hotel/italy-hotel.jpg', 0),
+  ('Rimini Adriatic Park',   '/uploads/hotel/italy-hotel.jpg', 1)
 ) v(hotel_name, url, sort_order)
 ON v.hotel_name = h.name
 ON CONFLICT (hotel_id, url) DO NOTHING;
@@ -559,8 +559,7 @@ SELECT
 FROM hotel h
 JOIN (VALUES
   ('Kemer Orion Resort',     (SELECT dc_id FROM dep_msk), '2026-05-10', 7,  (SELECT mp_id FROM mp_ai),  799, 'EUR', TRUE, TRUE, 12),
-  ('Kemer Orion Resort',     (SELECT dc_id FROM dep_spb), '2026-05-17', 7,  (SELECT mp_id FROM mp_ai),  829, 'EUR', TRUE, TRUE, 10),
-
+  
   ('Hurghada Coral Hotel',   (SELECT dc_id FROM dep_msk), '2026-01-25', 7,  (SELECT mp_id FROM mp_ai),  699, 'USD', TRUE, TRUE, 15),
 
   ('Dubai Marina View',      (SELECT dc_id FROM dep_msk), '2026-03-02', 5,  (SELECT mp_id FROM mp_bb),  999, 'EUR', TRUE, TRUE, 9),
@@ -594,8 +593,8 @@ SELECT r.id, v.url
 FROM review r
 JOIN hotel h ON h.id = r.hotel_id
 JOIN (VALUES
-  ('Kemer Orion Resort','https://picsum.photos/seed/rev_tr1/700/450'),
-  ('Dubai Marina View','https://picsum.photos/seed/rev_ae1/700/450')
+  ('Kemer Orion Resort','/uploads/hotel/kemer-hotel.jpg'),
+  ('Dubai Marina View','/uploads/hotel/dubai-hotel.jpg')
 ) v(hotel_name, url)
 ON v.hotel_name = h.name
 ON CONFLICT (review_id, url) DO NOTHING;

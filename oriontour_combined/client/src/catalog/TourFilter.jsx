@@ -5,27 +5,40 @@ const API = import.meta.env.VITE_API_BASE || 'http://localhost:5000';
 
 const toStrArray = (arr) => (arr || []).map(String);
 
+function formatTourDate(value) {
+  if (!value) return "";
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return String(value);
+
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const year = date.getFullYear();
+
+  return `${day}-${month}-${year}`;
+}
+
 export default function TourFilter() {
 
-  
+
   const [departures, setDepartures] = useState([]);
   const [countries, setCountries] = useState([]);
   const [mealPlans, setMealPlans] = useState([]);
   const [resorts, setResorts] = useState([]);
   const [hotels, setHotels] = useState([]);
 
-  
+
   const [data, setData] = useState({ items: [], total: 0, page: 1, pageSize: 12 });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
- 
+
   const [form, setForm] = useState({
     fromId: "",
     countryId: "",
     dateFrom: "",
     dateTo: "",
-    nightsMin: "7",
+    nightsMin: "1",
     nightsMax: "14",
     adults: "1",
     children: "0",
@@ -43,7 +56,7 @@ export default function TourFilter() {
     pageSize: 12,
   });
 
- 
+
   const searchBody = useMemo(() => {
     return {
       ...form,
@@ -79,7 +92,7 @@ export default function TourFilter() {
     setResorts(rs);
   }
 
- 
+
   async function loadHotels(resortIdsArr) {
     const hs = await fetchJson(`${API}/api/meta/hotels`, {
       method: "POST",
@@ -89,7 +102,7 @@ export default function TourFilter() {
     setHotels(hs);
   }
 
- 
+
   async function searchTours(body) {
     return fetchJson(`${API}/api/tours/search`, {
       method: "POST",
@@ -111,13 +124,13 @@ export default function TourFilter() {
 
   useEffect(() => {
     loadHotels(form.resortIds).catch(() => setError("Не удалось загрузить отели."));
-    
+
   }, [form.resortIds.join(",")]);
 
- 
+
   useEffect(() => {
     handleSearch(1);
-    
+
   }, []);
 
   async function handleSearch(nextPage) {
@@ -126,7 +139,7 @@ export default function TourFilter() {
     try {
       const body = { ...searchBody, page: nextPage || 1 };
 
-     
+
       if (!body.countryId) {
         body.resortIds = [];
         body.hotelIds = [];
@@ -163,7 +176,7 @@ export default function TourFilter() {
   }
 
   function onResortToggle(id) {
-   
+
     setForm((p) => ({ ...p, hotelIds: [], page: 1 }));
     toggleId("resortIds", id);
   }
@@ -469,7 +482,7 @@ export default function TourFilter() {
                   </div>
 
                   <div className="card-meta">
-                    <span>{t.start_date}</span>
+                    <span>{formatTourDate(t.start_date)}</span>
                     <span>·</span>
                     <span>{t.nights} ноч.</span>
                     <span>·</span>

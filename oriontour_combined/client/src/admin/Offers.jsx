@@ -31,6 +31,15 @@ function formatAdminDate(value) {
   }).format(d)
 }
 
+function formatInt(value) {
+  if (value === null || value === undefined || value === '') return '0'
+  const num = Number(value)
+  if (!Number.isFinite(num)) return '0'
+
+  return new Intl.NumberFormat('ru-RU', {
+    maximumFractionDigits: 0,
+  }).format(num)
+}
 
 export default function Offers() {
   const { meta } = useMeta()
@@ -63,13 +72,15 @@ export default function Offers() {
     { key: 'hotel_name', title: 'Отель' },
     { key: 'departure_city_name', title: 'Вылет' },
     { key: 'meal_plan_code', title: 'Пит.' },
-    { key: 'price', title: 'Цена' },
+    { key: 'price', title: 'Цена', render: (r) => formatInt(r.price) },
     { key: 'currency_code', title: 'Вал.' },
     { key: 'is_available', title: 'Доступен', render: (r) => (r.is_available ? '✓' : '') },
   ]
 
-
-  const create = () => { setForm(empty); setOpen(true) }
+  const create = () => {
+    setForm(empty)
+    setOpen(true)
+  }
 
   const save = async () => {
     setSaving(true)
@@ -112,15 +123,26 @@ export default function Offers() {
   return (
     <div style={{ display: 'grid', gap: 12 }}>
       <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-        <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Поиск: отель / тур / город вылета..." style={{ flex: 1, padding: 10, borderRadius: 10, border: '1px solid #ddd' }} />
+        <input
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+          placeholder="Поиск: отель / тур / город вылета..."
+          style={{ flex: 1, padding: 10, borderRadius: 10, border: '1px solid #ddd' }}
+        />
 
         <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 14, color: '#333' }}>
-          <input type="checkbox" checked={onlyAvailable} onChange={(e) => setOnlyAvailable(e.target.checked)} />
+          <input
+            type="checkbox"
+            checked={onlyAvailable}
+            onChange={(e) => setOnlyAvailable(e.target.checked)}
+          />
           только доступные
         </label>
 
-
-        <button onClick={create} style={{ padding: '10px 12px', borderRadius: 10, border: '1px solid #111', background: '#111', color: '#fff' }}>
+        <button
+          onClick={create}
+          style={{ padding: '10px 12px', borderRadius: 10, border: '1px solid #111', background: '#111', color: '#fff' }}
+        >
           + Создать оффер
         </button>
       </div>
@@ -153,10 +175,17 @@ export default function Offers() {
         onClose={() => setOpen(false)}
         footer={
           <>
-            <button onClick={() => setOpen(false)} style={{ padding: '10px 12px', borderRadius: 10, border: '1px solid #ddd', background: '#fff' }}>
+            <button
+              onClick={() => setOpen(false)}
+              style={{ padding: '10px 12px', borderRadius: 10, border: '1px solid #ddd', background: '#fff' }}
+            >
               Отмена
             </button>
-            <button disabled={saving} onClick={save} style={{ padding: '10px 12px', borderRadius: 10, border: '1px solid #111', background: '#111', color: '#fff', opacity: saving ? 0.7 : 1 }}>
+            <button
+              disabled={saving}
+              onClick={save}
+              style={{ padding: '10px 12px', borderRadius: 10, border: '1px solid #111', background: '#111', color: '#fff', opacity: saving ? 0.7 : 1 }}
+            >
               {saving ? 'Сохранение...' : 'Сохранить'}
             </button>
           </>
@@ -164,15 +193,26 @@ export default function Offers() {
       >
         <div style={{ display: 'grid', gap: 10, gridTemplateColumns: 'repeat(2, minmax(0, 1fr))' }}>
           <Field label="tour_id (опц.)">
-            <input value={form.tour_id} onChange={(e) => setForm({ ...form, tour_id: e.target.value })} placeholder="id тура или пусто" />
+            <input
+              value={form.tour_id}
+              onChange={(e) => setForm({ ...form, tour_id: e.target.value })}
+              placeholder="id тура или пусто"
+            />
           </Field>
 
           <Field label="hotel_id">
-            <input value={form.hotel_id} onChange={(e) => setForm({ ...form, hotel_id: e.target.value })} placeholder="id отеля" />
+            <input
+              value={form.hotel_id}
+              onChange={(e) => setForm({ ...form, hotel_id: e.target.value })}
+              placeholder="id отеля"
+            />
           </Field>
 
           <Field label="departure_city_id">
-            <select value={form.departure_city_id} onChange={(e) => setForm({ ...form, departure_city_id: e.target.value })}>
+            <select
+              value={form.departure_city_id}
+              onChange={(e) => setForm({ ...form, departure_city_id: e.target.value })}
+            >
               <option value="">— выбрать —</option>
               {(meta?.departureCities || []).map(d => (
                 <option key={d.id} value={d.id}>{d.name_ru}</option>
@@ -181,15 +221,28 @@ export default function Offers() {
           </Field>
 
           <Field label="start_date">
-            <input type="date" value={form.start_date} onChange={(e) => setForm({ ...form, start_date: e.target.value })} />
+            <input
+              type="date"
+              value={form.start_date}
+              onChange={(e) => setForm({ ...form, start_date: e.target.value })}
+            />
           </Field>
 
           <Field label="nights">
-            <input type="number" min="1" max="60" value={form.nights} onChange={(e) => setForm({ ...form, nights: e.target.value })} />
+            <input
+              type="number"
+              min="1"
+              max="60"
+              value={form.nights}
+              onChange={(e) => setForm({ ...form, nights: e.target.value })}
+            />
           </Field>
 
           <Field label="meal_plan_id (опц.)">
-            <select value={form.meal_plan_id} onChange={(e) => setForm({ ...form, meal_plan_id: e.target.value })}>
+            <select
+              value={form.meal_plan_id}
+              onChange={(e) => setForm({ ...form, meal_plan_id: e.target.value })}
+            >
               <option value="">— не выбран —</option>
               {(meta?.mealPlans || []).map(m => (
                 <option key={m.id} value={m.id}>{m.code} — {m.name_ru}</option>
@@ -198,11 +251,18 @@ export default function Offers() {
           </Field>
 
           <Field label="price">
-            <input type="number" value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} />
+            <input
+              type="number"
+              value={form.price}
+              onChange={(e) => setForm({ ...form, price: e.target.value })}
+            />
           </Field>
 
           <Field label="currency_code">
-            <select value={form.currency_code} onChange={(e) => setForm({ ...form, currency_code: e.target.value })}>
+            <select
+              value={form.currency_code}
+              onChange={(e) => setForm({ ...form, currency_code: e.target.value })}
+            >
               {(meta?.currencies || []).map(c => (
                 <option key={c.code} value={c.code}>{c.code}</option>
               ))}
@@ -211,19 +271,30 @@ export default function Offers() {
 
           <div style={{ display: 'grid', gap: 10 }}>
             <label style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <input type="checkbox" checked={form.includes_flight} onChange={(e) => setForm({ ...form, includes_flight: e.target.checked })} />
+              <input
+                type="checkbox"
+                checked={form.includes_flight}
+                onChange={(e) => setForm({ ...form, includes_flight: e.target.checked })}
+              />
               includes_flight
             </label>
 
-
             <label style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <input type="checkbox" checked={form.is_available} onChange={(e) => setForm({ ...form, is_available: e.target.checked })} />
+              <input
+                type="checkbox"
+                checked={form.is_available}
+                onChange={(e) => setForm({ ...form, is_available: e.target.checked })}
+              />
               is_available
             </label>
           </div>
 
           <Field label="available_seats (опц.)">
-            <input type="number" value={form.available_seats} onChange={(e) => setForm({ ...form, available_seats: e.target.value })} />
+            <input
+              type="number"
+              value={form.available_seats}
+              onChange={(e) => setForm({ ...form, available_seats: e.target.value })}
+            />
           </Field>
         </div>
 
@@ -239,6 +310,7 @@ function Field({ label, children }) {
   const el = React.cloneElement(children, {
     style: { padding: 10, borderRadius: 10, border: '1px solid #ddd', width: '100%' }
   })
+
   return (
     <div style={{ display: 'grid', gap: 6 }}>
       <div style={{ fontSize: 12, color: '#666' }}>{label}</div>
